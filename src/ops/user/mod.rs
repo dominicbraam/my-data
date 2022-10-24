@@ -1,6 +1,6 @@
 use diesel::prelude::*;
 
-use crate::models::{NewUser,User,InputUserHandler};
+use crate::models::user::{NewUser,User,InputUserHandler};
 use crate::schema::user::dsl::*;
 
 type DbError = Box<dyn std::error::Error + Send + Sync>;

@@ -1,5 +1,6 @@
 use crate::actix_web::{web,get,post,HttpResponse,Error};
 use crate::ops;
+use crate::models;
 use super::DbPool;
 
 #[get("/user")]
@@ -21,7 +22,7 @@ pub async fn grab_users(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> 
 }
 
 #[post("/user")]
-pub async fn create_user(pool: web::Data<DbPool>, body: web::Json<crate::models::InputUserHandler>) -> Result<HttpResponse, Error> {
+pub async fn create_user(pool: web::Data<DbPool>, body: web::Json<models::user::InputUserHandler>) -> Result<HttpResponse, Error> {
 
     let size = web::block(move || {
         let mut conn = pool.get()?;
