@@ -11,7 +11,7 @@ mod models;
 mod database;
 mod ops;
 mod api;
-
+mod home;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -37,4 +37,7 @@ async fn main() -> std::io::Result<()> {
     .run()
     .await
 
+
+
 }
+
