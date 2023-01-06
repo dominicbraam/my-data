@@ -1,5 +1,5 @@
 [package]
-name = "ozone"
+name = "ozone-api"
 version = "0.1.0"
 edition = "2021"
 
