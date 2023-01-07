@@ -11,7 +11,6 @@ mod models;
 mod database;
 mod ops;
 mod api;
-mod home;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -30,14 +29,11 @@ async fn main() -> std::io::Result<()> {
             // set up DB pool to be used with web::Data<Pool> extractor
             .app_data(web::Data::new(pool.clone()))
             .wrap(middleware::Logger::default())
-            .service(api::user::grab_users)
-            .service(api::user::create_user)
+            .service(api::person::grab_persons)
+            .service(api::person::create_person)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
     .await
 
-
-
 }
-

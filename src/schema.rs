@@ -1,11 +1,11 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
-    user (id) {
-        id -> Unsigned<Integer>,
-        username -> Varchar,
-        first_name -> Varchar,
-        last_name -> Varchar,
+    person (id) {
+        id -> Int4,
+        username -> Text,
+        first_name -> Text,
+        last_name -> Text,
         dob -> Date,
     }
 }

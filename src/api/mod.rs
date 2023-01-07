@@ -1,3 +1,3 @@
-pub mod user;
+pub mod person;
 
 use crate::database::DbPool;

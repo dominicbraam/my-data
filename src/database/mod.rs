@@ -5,7 +5,7 @@ use diesel::{
 use dotenv::dotenv;
 use std::env;
 
-pub type DbPool = r2d2::Pool<ConnectionManager<MysqlConnection>>;
+pub type DbPool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
 pub fn create_pooled_connection() -> DbPool {
 //pub fn create_pooled_connection() -> Result<DbPool, crate::Error> {
@@ -13,7 +13,7 @@ pub fn create_pooled_connection() -> DbPool {
 
     let database_url = env::var("DATABASE_URL")
         .expect("DATABASE_URL name is incorrect");
-    let manager = ConnectionManager::<MysqlConnection>::new(&database_url);
+    let manager = ConnectionManager::<PgConnection>::new(&database_url);
     //let pool = r2d2::Pool::builder()
     r2d2::Pool::builder()
         .build(manager)

@@ -1,9 +1,9 @@
 use serde::{Deserialize,Serialize};
-use crate::schema::user;
+use crate::schema::person;
 
 #[derive(Serialize,Deserialize,Queryable)]
-pub struct User {
-    pub id: u32,
+pub struct Person {
+    pub id: i32,
     pub username: String,
     pub first_name: String,
     pub last_name: String,
@@ -11,8 +11,8 @@ pub struct User {
 }
 
 #[derive(Serialize,Deserialize,Insertable)]
-#[diesel(table_name = user)]
-pub struct NewUser<'a> {
+#[diesel(table_name = person)]
+pub struct NewPerson<'a> {
     pub username: &'a str,
     pub first_name: &'a str,
     pub last_name: &'a str,
@@ -20,7 +20,7 @@ pub struct NewUser<'a> {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct InputUserHandler {
+pub struct InputPersonHandler {
     pub username: String,
     pub first_name: String,
     pub last_name: String,
