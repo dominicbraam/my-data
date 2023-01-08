@@ -5,3 +5,4 @@ CREATE TABLE finance_currency (
 );
 
 INSERT INTO finance_currency (label,abbreviation) VALUES ('Guyanese Dollar','GYD');
+INSERT INTO finance_currency (label,abbreviation) VALUES ('United States Dollar','USD');

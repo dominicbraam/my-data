@@ -3,30 +3,30 @@ use crate::ops;
 use crate::models;
 use super::DbPool;
 
-#[get("/person")]
-pub async fn get_persons(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
+#[get("/finance/incexp")]
+pub async fn get_incexps(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
 
-    let persons = web::block(move || {
+    let incexps = web::block(move || {
         let mut conn = pool.get()?;
-        ops::person::pull_persons(&mut conn)
+        ops::finance::pull_incexps(&mut conn)
     })
     .await?
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    if persons.len() > 0 {
-        Ok(HttpResponse::Ok().json(persons))
+    if incexps.len() > 0 {
+        Ok(HttpResponse::Ok().json(incexps))
     } else {
-        let res = HttpResponse::NotFound().body(format!("No persons found"));
+        let res = HttpResponse::NotFound().body(format!("No data found"));
         Ok(res)
     }
 }
 
-#[post("/person")]
-pub async fn create_person(pool: web::Data<DbPool>, body: web::Json<models::person::InputPersonHandler>) -> Result<HttpResponse, Error> {
+#[post("/finance/incexp/add")]
+pub async fn create_finance_incexp(pool: web::Data<DbPool>, body: web::Json<models::finance::InputFinanceIncExpHandler>) -> Result<HttpResponse, Error> {
 
     let size = web::block(move || {
         let mut conn = pool.get()?;
-        ops::person::push_person(&mut conn, body)
+        ops::finance::push_incexp(&mut conn, body)
     })
     .await?
         .map_err(actix_web::error::ErrorInternalServerError)?;

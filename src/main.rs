@@ -29,8 +29,10 @@ async fn main() -> std::io::Result<()> {
             // set up DB pool to be used with web::Data<Pool> extractor
             .app_data(web::Data::new(pool.clone()))
             .wrap(middleware::Logger::default())
-            .service(api::person::grab_persons)
+            .service(api::person::get_persons)
             .service(api::person::create_person)
+            .service(api::finance::get_incexps)
+            .service(api::finance::create_finance_incexp)
     })
     .bind(("127.0.0.1", 8080))?
     .run()

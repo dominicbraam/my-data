@@ -2,8 +2,7 @@ use diesel::prelude::*;
 
 use crate::models::person::{NewPerson,Person,InputPersonHandler};
 use crate::schema::person::dsl::*;
-
-type DbError = Box<dyn std::error::Error + Send + Sync>;
+use super::DbError;
 
 pub fn push_person(conn: &mut PgConnection, input: crate::web::Json<InputPersonHandler>) -> Result<usize,DbError> {
 
