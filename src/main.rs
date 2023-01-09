@@ -3,6 +3,7 @@ extern crate diesel;
 extern crate dotenv;
 extern crate chrono;
 extern crate actix_web;
+extern crate reqwest;
 
 use actix_web::{middleware,web,App,HttpServer};
 
@@ -10,7 +11,8 @@ mod schema;
 mod models;
 mod database;
 mod ops;
-mod api;
+mod endpoints;
+mod external;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -29,10 +31,12 @@ async fn main() -> std::io::Result<()> {
             // set up DB pool to be used with web::Data<Pool> extractor
             .app_data(web::Data::new(pool.clone()))
             .wrap(middleware::Logger::default())
-            .service(api::person::get_persons)
-            .service(api::person::create_person)
-            .service(api::finance::get_incexps)
-            .service(api::finance::create_finance_incexp)
+            .service(endpoints::person::get_persons)
+            .service(endpoints::person::create_person)
+            .service(endpoints::finance::get_incexps)
+            .service(endpoints::finance::create_finance_incexp)
+            .service(endpoints::assistant::weather::get_weather)
+            .service(endpoints::assistant::greet::greet)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
