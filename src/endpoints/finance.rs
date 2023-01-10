@@ -21,7 +21,7 @@ pub async fn get_incexps(pool: web::Data<DbPool>) -> Result<HttpResponse, Error>
     }
 }
 
-#[post("/finance/incexp/add")]
+#[post("/finance/incexp")]
 pub async fn create_finance_incexp(pool: web::Data<DbPool>, body: web::Json<models::finance::InputFinanceIncExpHandler>) -> Result<HttpResponse, Error> {
 
     let size = web::block(move || {
@@ -30,8 +30,6 @@ pub async fn create_finance_incexp(pool: web::Data<DbPool>, body: web::Json<mode
     })
     .await?
         .map_err(actix_web::error::ErrorInternalServerError)?;
-        //.map(|person| HttpResponse::Created().json(person))
-        //.map_err(|_| HttpResponse::InternalServerError())?;
 
     Ok(HttpResponse::Ok().json(size))
 }

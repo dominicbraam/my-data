@@ -30,8 +30,6 @@ pub async fn create_person(pool: web::Data<DbPool>, body: web::Json<models::pers
     })
     .await?
         .map_err(actix_web::error::ErrorInternalServerError)?;
-        //.map(|person| HttpResponse::Created().json(person))
-        //.map_err(|_| HttpResponse::InternalServerError())?;
 
     Ok(HttpResponse::Ok().json(size))
 }
