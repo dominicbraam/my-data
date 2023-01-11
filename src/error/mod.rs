@@ -20,6 +20,7 @@ impl fmt::Display for AppError {
 pub enum AppErrorType {
     DbError,
     NotFoundError,
+    ReqwestError,
 //    BadReqError,
 }
 
@@ -61,6 +62,15 @@ impl From<BlockingError> for AppError {
         }
     }
 }
+impl From<reqwest::Error> for AppError {
+    fn from(error: reqwest::Error) -> AppError {
+        AppError {
+            message: None,
+            cause: Some(error.to_string()),
+            error_type: AppErrorType::ReqwestError,
+        }
+    }
+}
 
 impl ResponseError for AppError {
 
@@ -68,6 +78,7 @@ impl ResponseError for AppError {
         match self.error_type {
             AppErrorType::DbError => StatusCode::INTERNAL_SERVER_ERROR,
             AppErrorType::NotFoundError => StatusCode::NOT_FOUND,
+            AppErrorType::ReqwestError => StatusCode::INTERNAL_SERVER_ERROR,
             // AppErrorType::BadReqError => StatusCode::BAD_REQUEST,
         }
     }
