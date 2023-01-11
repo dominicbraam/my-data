@@ -1,10 +1,11 @@
 use diesel::prelude::*;
 
-use crate::models::finance::{NewFinanceIncExp,FinanceIncExp,InputFinanceIncExpHandler};
+use crate::models::finance::{NewFinanceIncExp,FinanceIncExp,InputFinanceIncExpHandler,FinanceCurrency};
 use crate::schema::finance_incexp::dsl::*;
-use super::DbError;
+use crate::schema::finance_currency::dsl::*;
+use crate::error::AppError;
 
-pub fn push_incexp(conn: &mut PgConnection, input: crate::web::Json<InputFinanceIncExpHandler>) -> Result<usize,DbError> {
+pub fn push_incexp(conn: &mut PgConnection, input: crate::web::Json<InputFinanceIncExpHandler>) -> Result<usize,AppError> {
 
     let new_finance_incexp = NewFinanceIncExp {
         person_id: 1,
@@ -20,19 +21,26 @@ pub fn push_incexp(conn: &mut PgConnection, input: crate::web::Json<InputFinance
 
      let result = diesel::insert_into(finance_incexp)
          .values(&new_finance_incexp)
-         //.get_result(conn)?;
          .execute(conn)
          .expect("Error creating new income/expense item.");
 
      Ok(result)
 }
 
-pub fn pull_incexps(conn: &mut PgConnection) -> Result<Vec<FinanceIncExp>,DbError> {
+pub fn pull_incexps(conn: &mut PgConnection) -> Result<Vec<FinanceIncExp>,AppError> {
     
      let results = finance_incexp
          .load::<FinanceIncExp>(conn)
          .expect("Error loading income/expenditure list.");
-         //.optional()?;
+
+     Ok(results)
+}
+
+pub fn pull_currencies(conn: &mut PgConnection) -> Result<Vec<FinanceCurrency>,AppError> {
+    
+     let results = finance_currency
+         .load::<FinanceCurrency>(conn)
+         .expect("Error loading currency list.");
 
      Ok(results)
 }

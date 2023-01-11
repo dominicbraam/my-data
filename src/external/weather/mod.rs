@@ -1,9 +1,10 @@
 use crate::models::assistant::{WeatherEntities,WeatherApiResponse};
 use super::reqwest;
-use actix_web::Error;
 use std::env;
 
-pub async fn call_weather_api(input: crate::web::Json<WeatherEntities>) -> Result<String,Error> {
+use crate::error::AppError;
+
+pub async fn call_weather_api(input: crate::web::Json<WeatherEntities>) -> Result<WeatherApiResponse,AppError> {
 
     let entities = WeatherEntities {
         city : input.city.clone(),
@@ -27,16 +28,5 @@ pub async fn call_weather_api(input: crate::web::Json<WeatherEntities>) -> Resul
         .await
         .expect("Failed to get data");
     
-    let response = "In ".to_string()
-        + &response.name.to_string()
-        + ", it is currently "
-        + &response.main.temp.to_string()
-        + " degress Celcius"
-        + " and feels like "
-        + &response.main.feels_like.to_string()
-        + ". "
-        + &response.weather.weather.description.to_string()
-        + " is to be expected.";
-
     Ok(response)
 }

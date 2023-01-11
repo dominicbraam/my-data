@@ -38,3 +38,10 @@ pub struct InputFinanceIncExpHandler {
     pub currency_id: i16,
     pub transaction_type_id: i16,
 }
+
+#[derive(Serialize,Deserialize,Queryable)]
+pub struct FinanceCurrency {
+    pub id: i16,
+    pub label: String,
+    pub abbreviation: String,
+}

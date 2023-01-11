@@ -10,9 +10,9 @@ use actix_web::{middleware,web,App,HttpServer};
 mod schema;
 mod models;
 mod database;
-mod ops;
 mod endpoints;
 mod external;
+mod error;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -35,6 +35,7 @@ async fn main() -> std::io::Result<()> {
             .service(endpoints::person::create_person)
             .service(endpoints::finance::get_incexps)
             .service(endpoints::finance::create_finance_incexp)
+            .service(endpoints::finance::get_currencies)
             .service(endpoints::assistant::weather::get_weather)
             .service(endpoints::assistant::greet::greet)
     })

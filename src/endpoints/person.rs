@@ -1,10 +1,12 @@
-use crate::actix_web::{web,get,post,HttpResponse,Error};
-use crate::ops;
+use crate::actix_web::{web,get,post,HttpResponse};
+use crate::database::ops;
 use crate::models;
 use super::DbPool;
 
+use crate::error::AppError;
+
 #[get("/person")]
-pub async fn get_persons(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
+pub async fn get_persons(pool: web::Data<DbPool>) -> Result<HttpResponse, AppError> {
 
     let persons = web::block(move || {
         let mut conn = pool.get()?;
@@ -13,16 +15,11 @@ pub async fn get_persons(pool: web::Data<DbPool>) -> Result<HttpResponse, Error>
     .await?
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    if persons.len() > 0 {
-        Ok(HttpResponse::Ok().json(persons))
-    } else {
-        let res = HttpResponse::NotFound().body(format!("No persons found"));
-        Ok(res)
-    }
+    Ok(HttpResponse::Ok().json(persons))
 }
 
 #[post("/person")]
-pub async fn create_person(pool: web::Data<DbPool>, body: web::Json<models::person::InputPersonHandler>) -> Result<HttpResponse, Error> {
+pub async fn create_person(pool: web::Data<DbPool>, body: web::Json<models::person::InputPersonHandler>) -> Result<HttpResponse, AppError> {
 
     let size = web::block(move || {
         let mut conn = pool.get()?;

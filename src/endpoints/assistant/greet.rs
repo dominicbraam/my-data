@@ -1,20 +1,13 @@
-use crate::actix_web::{web,get,HttpResponse,Error};
-
-use crate::models::assistant::GreetEntities;
-use crate::models::assistant::AssistantResponse;
+use crate::actix_web::{web,get,HttpResponse};
+use crate::models::assistant::{GreetEntities,AssistantResponse};
+use crate::error::AppError;
 
 #[get("/assistant/greet")]
-pub async fn greet(data: web::Json<GreetEntities>) -> Result<HttpResponse, Error> {
+pub async fn greet(data: web::Json<GreetEntities>) -> Result<HttpResponse, AppError> {
 
     let greet_res = AssistantResponse{
-        //message: data.greeting.clone(),
-        message: "Hello".to_string(),
+        message: data.greeting.clone(),
     };
 
-    if !greet_res.message.is_empty() {
-        Ok(HttpResponse::Ok().json(greet_res))
-    } else {
-        let res = HttpResponse::NotFound().body(format!("Error called in greet endpoint"));
-        Ok(res)
-    }
+    Ok(HttpResponse::Ok().json(greet_res))
 }

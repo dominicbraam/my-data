@@ -2,9 +2,9 @@ use diesel::prelude::*;
 
 use crate::models::person::{NewPerson,Person,InputPersonHandler};
 use crate::schema::person::dsl::*;
-use super::DbError;
+use crate::error::AppError;
 
-pub fn push_person(conn: &mut PgConnection, input: crate::web::Json<InputPersonHandler>) -> Result<usize,DbError> {
+pub fn push_person(conn: &mut PgConnection, input: crate::web::Json<InputPersonHandler>) -> Result<usize,AppError> {
 
     let new_person = NewPerson {
         username: &input.username,
@@ -15,19 +15,17 @@ pub fn push_person(conn: &mut PgConnection, input: crate::web::Json<InputPersonH
 
      let result = diesel::insert_into(person)
          .values(&new_person)
-         //.get_result(conn)?;
          .execute(conn)
          .expect("Error creating new person");
 
      Ok(result)
 }
 
-pub fn pull_persons(conn: &mut PgConnection) -> Result<Vec<Person>,DbError> {
+pub fn pull_persons(conn: &mut PgConnection) -> Result<Vec<Person>,AppError> {
     
      let results = person
          .load::<Person>(conn)
          .expect("Error loading persons.");
-         //.optional()?;
 
      Ok(results)
 }
