@@ -6,11 +6,19 @@ use crate::error::AppError;
 
 pub fn push_person(conn: &mut PgConnection, input: crate::web::Json<InputPersonHandler>) -> Result<usize,AppError> {
 
+    let dateofbirth = match chrono::NaiveDate::from_ymd_opt(1998,12,29){
+        Some(date) => date,
+        None => {
+            log::error!("Invalid date");
+            panic!("Invalid date")
+        }
+    };
+
     let new_person = NewPerson {
         username: &input.username,
         first_name: &input.first_name,
         last_name: &input.last_name,
-        dob: chrono::NaiveDate::from_ymd(1998,10,29),
+        dob: dateofbirth,
     };
 
      let result = diesel::insert_into(person)
