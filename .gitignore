@@ -1,2 +1,3 @@
 /target
 .env
+/db-postgresql-docker/db-data
