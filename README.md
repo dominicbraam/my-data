@@ -1,11 +1,7 @@
-# Ozone AI
+# Ozone API
 
-On the path to be a personal assistant.
+API for personal management tasks.
 
-## Main Technologies
-- actix_web
-- diesel
-
-## Resources
-- (https://blog.logrocket.com/interacting-databases-rust-diesel-vs-sqlx/)
-- (https://auth0.com/blog/build-an-api-in-rust-with-jwt-authentication-using-actix-web/)
+## Components
+- manage personal data
+- managepersonal finances
