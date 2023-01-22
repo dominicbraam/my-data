@@ -5,8 +5,8 @@ use super::DbPool;
 
 use crate::error::AppError;
 
-#[get("/finance/incexp")]
-pub async fn get_incexps(pool: web::Data<DbPool>) -> Result<HttpResponse, AppError> {
+#[get("/finance/transaction")]
+pub async fn get_transactions(pool: web::Data<DbPool>) -> Result<HttpResponse, AppError> {
 
     let incexps = web::block(move || {
         let mut conn = pool.get()?;
@@ -18,8 +18,8 @@ pub async fn get_incexps(pool: web::Data<DbPool>) -> Result<HttpResponse, AppErr
     Ok(HttpResponse::Ok().json(incexps))
 }
 
-#[post("/finance/incexp")]
-pub async fn create_finance_incexp(pool: web::Data<DbPool>, body: web::Json<models::finance::InputFinanceIncExpHandler>) -> Result<HttpResponse, AppError> {
+#[post("/finance/transaction")]
+pub async fn create_transaction(pool: web::Data<DbPool>, body: web::Json<models::finance::InputTransactionHandler>) -> Result<HttpResponse, AppError> {
 
     let size = web::block(move || {
         let mut conn = pool.get()?;
