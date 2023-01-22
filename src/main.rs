@@ -27,9 +27,13 @@ async fn main() -> std::io::Result<()> {
 
     // Start HTTP server
     HttpServer::new(move || {
+        let cors = actix_cors::Cors::default()
+            .allowed_origin("http://localhost");
+
         App::new()
             // set up DB pool to be used with web::Data<Pool> extractor
             .app_data(web::Data::new(pool.clone()))
+            .wrap(cors)
             .wrap(middleware::Logger::default())
             .service(endpoints::person::get_persons)
             .service(endpoints::person::create_person)
@@ -39,7 +43,7 @@ async fn main() -> std::io::Result<()> {
             .service(endpoints::assistant::weather::get_weather)
             .service(endpoints::assistant::greet::greet)
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(("0.0.0.0", 8080))?
     .run()
     .await
 
