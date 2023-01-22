@@ -6,6 +6,7 @@ extern crate actix_web;
 extern crate reqwest;
 
 use actix_web::{middleware,web,App,HttpServer};
+use std::env;
 
 mod schema;
 mod models;
@@ -22,6 +23,8 @@ async fn main() -> std::io::Result<()> {
 
     // set up database connection pool
     let pool = database::create_pooled_connection();
+    
+    let api_url = env::var("API_URL").expect("Failed to get API URL");
 
     log::info!("starting HTTP server at http://localhost:8080");
 
@@ -43,7 +46,7 @@ async fn main() -> std::io::Result<()> {
             .service(endpoints::assistant::weather::get_weather)
             .service(endpoints::assistant::greet::greet)
     })
-    .bind(("0.0.0.0", 8080))?
+    .bind((api_url, 8090))?
     .run()
     .await
 
