@@ -1,96 +1,151 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
-    finance_account (id) {
+    bank_account_balance_history (id) {
+        id -> Int4,
+        account_id -> Int4,
+        balance -> Numeric,
+        record_date -> Timestamp,
+    }
+}
+
+diesel::table! {
+    bank_account_types (id) {
+        id -> Int4,
+        #[sql_name = "type"]
+        type_ -> Varchar,
+    }
+}
+
+diesel::table! {
+    bank_accounts (id) {
         id -> Int4,
         person_id -> Int4,
-        name -> Text,
-        account_type_id -> Int2,
-        currency_id -> Int2,
+        account_type_id -> Int4,
+        currency_id -> Int4,
+        balance -> Numeric,
     }
 }
 
 diesel::table! {
-    finance_account_balance (id) {
+    currencies (id) {
         id -> Int4,
-        account_id -> Int4,
-        amount -> Float4,
+        code -> Bpchar,
+        name -> Varchar,
     }
 }
 
 diesel::table! {
-    finance_account_type (id) {
-        id -> Int2,
-        name -> Text,
-    }
-}
-
-diesel::table! {
-    finance_category (id) {
+    emails (id) {
         id -> Int4,
-        name -> Text,
-        transaction_type_id -> Int2,
+        person_id -> Int4,
+        email -> Varchar,
     }
 }
 
 diesel::table! {
-    finance_currency (id) {
-        id -> Int2,
-        label -> Text,
-        abbreviation -> Text,
-    }
-}
-
-diesel::table! {
-    finance_transaction (id) {
+    persons (id) {
         id -> Int4,
-        account_id -> Int4,
-        description -> Text,
-        bank_description -> Nullable<Text>,
-        item_link -> Nullable<Text>,
-        amount -> Float4,
-        tentative_amount -> Nullable<Float4>,
-        is_amount_tentative -> Bool,
-        category_id -> Int4,
-        currency_id -> Int2,
-        created_at -> Timestamp,
-        updated_at -> Nullable<Timestamp>,
-    }
-}
-
-diesel::table! {
-    finance_transaction_type (id) {
-        id -> Int2,
-        name -> Text,
-    }
-}
-
-diesel::table! {
-    person (id) {
-        id -> Int4,
-        username -> Text,
-        first_name -> Text,
-        last_name -> Text,
+        username -> Varchar,
+        first_name -> Varchar,
+        last_name -> Varchar,
         dob -> Date,
+        password_hash -> Varchar,
     }
 }
 
-diesel::joinable!(finance_account -> finance_account_type (account_type_id));
-diesel::joinable!(finance_account -> finance_currency (currency_id));
-diesel::joinable!(finance_account -> person (person_id));
-diesel::joinable!(finance_account_balance -> finance_account (account_id));
-diesel::joinable!(finance_category -> finance_transaction_type (transaction_type_id));
-diesel::joinable!(finance_transaction -> finance_account (account_id));
-diesel::joinable!(finance_transaction -> finance_category (category_id));
-diesel::joinable!(finance_transaction -> finance_currency (currency_id));
+diesel::table! {
+    transaction_actions (id) {
+        id -> Int4,
+        actions -> Varchar,
+        transaction_type_id -> Int4,
+    }
+}
+
+diesel::table! {
+    transaction_groups (id) {
+        id -> Int4,
+        description -> Text,
+    }
+}
+
+diesel::table! {
+    transaction_products (id) {
+        id -> Int4,
+        name -> Varchar,
+        product_link -> Nullable<Text>,
+        description -> Nullable<Text>,
+        price -> Numeric,
+        currency_id -> Int4,
+    }
+}
+
+diesel::table! {
+    transaction_tags (id) {
+        id -> Int4,
+        tag -> Varchar,
+    }
+}
+
+diesel::table! {
+    transaction_types (id) {
+        id -> Int4,
+        #[sql_name = "type"]
+        type_ -> Varchar,
+    }
+}
+
+diesel::table! {
+    transactions (id) {
+        id -> Int4,
+        group_id -> Nullable<Int4>,
+        account_id -> Int4,
+        action_id -> Int4,
+        tag_id -> Nullable<Int4>,
+        product_id -> Nullable<Int4>,
+        amount -> Numeric,
+        transaction_date -> Date,
+        description -> Nullable<Text>,
+    }
+}
+
+diesel::table! {
+    wishlist (id) {
+        id -> Int4,
+        person_id -> Int4,
+        product_id -> Nullable<Int4>,
+        added_date -> Date,
+        list_order -> Int4,
+    }
+}
+
+diesel::joinable!(bank_account_balance_history -> bank_accounts (account_id));
+diesel::joinable!(bank_accounts -> bank_account_types (account_type_id));
+diesel::joinable!(bank_accounts -> currencies (currency_id));
+diesel::joinable!(bank_accounts -> persons (person_id));
+diesel::joinable!(emails -> persons (person_id));
+diesel::joinable!(transaction_actions -> transaction_types (transaction_type_id));
+diesel::joinable!(transaction_products -> currencies (currency_id));
+diesel::joinable!(transactions -> bank_accounts (account_id));
+diesel::joinable!(transactions -> transaction_actions (action_id));
+diesel::joinable!(transactions -> transaction_groups (group_id));
+diesel::joinable!(transactions -> transaction_products (product_id));
+diesel::joinable!(transactions -> transaction_tags (tag_id));
+diesel::joinable!(wishlist -> persons (person_id));
+diesel::joinable!(wishlist -> transaction_products (product_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
-    finance_account,
-    finance_account_balance,
-    finance_account_type,
-    finance_category,
-    finance_currency,
-    finance_transaction,
-    finance_transaction_type,
-    person,
+    bank_account_balance_history,
+    bank_account_types,
+    bank_accounts,
+    currencies,
+    emails,
+    persons,
+    transaction_actions,
+    transaction_groups,
+    transaction_products,
+    transaction_tags,
+    transaction_types,
+    transactions,
+    wishlist,
 );

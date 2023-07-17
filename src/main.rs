@@ -14,6 +14,7 @@ mod database;
 mod endpoints;
 mod external;
 mod error;
+mod middlewares;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -30,13 +31,13 @@ async fn main() -> std::io::Result<()> {
 
     // Start HTTP server
     HttpServer::new(move || {
-        let cors = actix_cors::Cors::default()
+/*         let cors = actix_cors::Cors::default()
             .allowed_origin("http://localhost");
-
+ */
         App::new()
             // set up DB pool to be used with web::Data<Pool> extractor
             .app_data(web::Data::new(pool.clone()))
-            .wrap(cors)
+            // .wrap(cors)
             .wrap(middleware::Logger::default())
             .service(endpoints::person::get_persons)
             .service(endpoints::person::create_person)
@@ -45,6 +46,7 @@ async fn main() -> std::io::Result<()> {
             .service(endpoints::finance::get_currencies)
             .service(endpoints::assistant::weather::get_weather)
             .service(endpoints::assistant::greet::greet)
+            .service(endpoints::protected)
     })
     .bind((api_url, 8090))?
     .run()

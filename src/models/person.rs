@@ -25,3 +25,17 @@ pub struct InputPersonHandler {
     pub first_name: String,
     pub last_name: String,
 }
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Login {
+    pub username: String,
+/*     pub password: String,
+    #[serde(default)]
+    pub remember_me: bool, */
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Claims {
+    pub sub: String,
+    pub exp: usize,
+}
