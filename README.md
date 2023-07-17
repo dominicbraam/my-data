@@ -4,7 +4,9 @@ API for personal data storage.
 
 ## Initial setup
 
-1. Copy .env.template to .env
+1. Clone this repo
+2. `cd` into my-data
+3. Copy .env.template to .env
 
 ### Database
 1. Create a postgres database for the API to use.
