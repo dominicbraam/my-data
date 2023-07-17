@@ -122,7 +122,7 @@ diesel::table! {
         action_id -> Int4,
         tag_id -> Nullable<Int4>,
         product_id -> Nullable<Int4>,
-        receipt_id -> Nullable<Int4>,
+        document_id -> Nullable<Int4>,
         amount -> Numeric,
         transaction_date -> Date,
         description -> Nullable<Text>,
@@ -149,7 +149,7 @@ diesel::joinable!(emails -> persons (person_id));
 diesel::joinable!(transaction_actions -> transaction_types (transaction_type_id));
 diesel::joinable!(transaction_products -> currencies (currency_id));
 diesel::joinable!(transactions -> bank_accounts (account_id));
-diesel::joinable!(transactions -> documents (receipt_id));
+diesel::joinable!(transactions -> documents (document_id));
 diesel::joinable!(transactions -> transaction_actions (action_id));
 diesel::joinable!(transactions -> transaction_groups (group_id));
 diesel::joinable!(transactions -> transaction_products (product_id));

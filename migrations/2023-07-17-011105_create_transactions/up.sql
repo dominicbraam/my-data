@@ -5,7 +5,7 @@ CREATE TABLE transactions (
   action_id INTEGER NOT NULL REFERENCES transaction_actions(id),
   tag_id INTEGER REFERENCES transaction_tags(id),
   product_id INTEGER REFERENCES transaction_products(id),
-  receipt_id INTEGER REFERENCES documents(id),
+  document_id INTEGER REFERENCES documents(id),
   amount DECIMAL(10, 2) NOT NULL,
   transaction_date DATE NOT NULL,
   description TEXT
