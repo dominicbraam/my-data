@@ -36,6 +36,25 @@ diesel::table! {
 }
 
 diesel::table! {
+    document_types (id) {
+        id -> Int4,
+        #[sql_name = "type"]
+        type_ -> Varchar,
+    }
+}
+
+diesel::table! {
+    documents (id) {
+        id -> Int4,
+        person_id -> Int4,
+        document_type_id -> Int4,
+        file_path -> Text,
+        description -> Nullable<Text>,
+        uploaded_at -> Timestamp,
+    }
+}
+
+diesel::table! {
     emails (id) {
         id -> Int4,
         person_id -> Int4,
@@ -103,6 +122,7 @@ diesel::table! {
         action_id -> Int4,
         tag_id -> Nullable<Int4>,
         product_id -> Nullable<Int4>,
+        receipt_id -> Nullable<Int4>,
         amount -> Numeric,
         transaction_date -> Date,
         description -> Nullable<Text>,
@@ -123,10 +143,13 @@ diesel::joinable!(bank_account_balance_history -> bank_accounts (account_id));
 diesel::joinable!(bank_accounts -> bank_account_types (account_type_id));
 diesel::joinable!(bank_accounts -> currencies (currency_id));
 diesel::joinable!(bank_accounts -> persons (person_id));
+diesel::joinable!(documents -> document_types (document_type_id));
+diesel::joinable!(documents -> persons (person_id));
 diesel::joinable!(emails -> persons (person_id));
 diesel::joinable!(transaction_actions -> transaction_types (transaction_type_id));
 diesel::joinable!(transaction_products -> currencies (currency_id));
 diesel::joinable!(transactions -> bank_accounts (account_id));
+diesel::joinable!(transactions -> documents (receipt_id));
 diesel::joinable!(transactions -> transaction_actions (action_id));
 diesel::joinable!(transactions -> transaction_groups (group_id));
 diesel::joinable!(transactions -> transaction_products (product_id));
@@ -139,6 +162,8 @@ diesel::allow_tables_to_appear_in_same_query!(
     bank_account_types,
     bank_accounts,
     currencies,
+    document_types,
+    documents,
     emails,
     persons,
     transaction_actions,
