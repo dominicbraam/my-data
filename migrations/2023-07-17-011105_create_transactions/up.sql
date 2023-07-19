@@ -6,6 +6,7 @@ CREATE TABLE transactions (
   tag_id INTEGER REFERENCES transaction_tags(id),
   product_id INTEGER REFERENCES transaction_products(id),
   document_id INTEGER REFERENCES documents(id),
+  is_need BOOLEAN,
   amount DECIMAL(10, 2) NOT NULL,
   transaction_date DATE NOT NULL,
   description TEXT

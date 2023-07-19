@@ -123,6 +123,7 @@ diesel::table! {
         tag_id -> Nullable<Int4>,
         product_id -> Nullable<Int4>,
         document_id -> Nullable<Int4>,
+        is_need -> Nullable<Bool>,
         amount -> Numeric,
         transaction_date -> Date,
         description -> Nullable<Text>,

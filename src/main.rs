@@ -12,7 +12,6 @@ mod schema;
 mod models;
 mod database;
 mod endpoints;
-mod external;
 mod error;
 mod middlewares;
 
@@ -26,6 +25,10 @@ async fn main() -> std::io::Result<()> {
     let pool = database::create_pooled_connection();
     
     let api_url = env::var("API_URL").expect("Failed to get API URL");
+    let api_port: u16 = env::var("API_PORT").expect("Failed to get API port")
+        .trim()
+        .parse()
+        .expect("Not an integer");
 
     log::info!("starting HTTP server at http://localhost:8080");
 
@@ -44,11 +47,9 @@ async fn main() -> std::io::Result<()> {
             .service(endpoints::finance::get_transactions)
             .service(endpoints::finance::create_transaction)
             .service(endpoints::finance::get_currencies)
-            .service(endpoints::assistant::weather::get_weather)
-            .service(endpoints::assistant::greet::greet)
             .service(endpoints::protected)
     })
-    .bind((api_url, 8090))?
+    .bind((api_url, api_port))?
     .run()
     .await
 

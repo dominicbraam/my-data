@@ -1,53 +1,53 @@
 use serde::{Deserialize,Serialize};
-use crate::schema::{finance_transaction};
+use crate::schema::{transactions};
+use bigdecimal::BigDecimal;
 
 #[derive(Serialize,Deserialize,Queryable)]
 pub struct Transaction {
     pub id: i32,
+    pub group_id: Option<i32>,
     pub account_id: i32,
-    pub description: String,
-    pub bank_description: Option<String>,
-    pub item_link: Option<String>,
-    pub amount: f32,
-    pub tentative_amount: Option<f32>,
-    pub is_amount_tentative: bool,
-    pub category_id: i32,
-    pub currency_id: i16,
-    pub created_at: chrono::NaiveDateTime,
-    pub updated_at: Option<chrono::NaiveDateTime>,
+    pub action_id: i32,
+    pub tag_id: Option<i32>,
+    pub product_id: Option<i32>,
+    pub document_id: Option<i32>,
+    pub is_need: Option<bool>,
+    pub amount: BigDecimal,
+    pub transaction_date: chrono::NaiveDate,
+    pub description: Option<String>,
 }
 
 #[derive(Serialize,Deserialize,Insertable)]
-#[diesel(table_name = finance_transaction)]
-pub struct NewTransaction<'a> {
+#[diesel(table_name = transactions)]
+pub struct NewTransaction {
+    pub group_id: Option<i32>,
     pub account_id: i32,
-    pub description: &'a str,
-    pub bank_description: Option<&'a str>,
-    pub item_link: Option<&'a str>,
-    pub amount: f32,
-    pub tentative_amount: Option<f32>,
-    pub is_amount_tentative: bool,
-    pub category_id: i32,
-    pub currency_id: i16,
-    pub created_at: chrono::NaiveDateTime,
-    pub updated_at: Option<chrono::NaiveDateTime>,
+    pub action_id: i32,
+    pub tag_id: Option<i32>,
+    pub product_id: Option<i32>,
+    pub document_id: Option<i32>,
+    pub is_need: Option<bool>,
+    pub amount: BigDecimal,
+    pub transaction_date: chrono::NaiveDate,
+    pub description: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct InputTransactionHandler {
-    pub description: String,
-    pub bank_description: Option<String>,
-    pub item_link: Option<String>,
-    pub amount: f32,
-    pub tentative_amount: Option<f32>,
-    pub is_amount_tentative: bool,
-    pub category_id: i32,
-    pub currency_id: i16,
+    pub group_id: Option<i32>,
+    pub account_id: i32,
+    pub action_id: i32,
+    pub tag_id: Option<i32>,
+    pub product_id: Option<i32>,
+    pub document_id: Option<i32>,
+    pub is_need: Option<bool>,
+    pub amount: BigDecimal,
+    pub description: Option<String>,
 }
 
 #[derive(Serialize,Deserialize,Queryable)]
 pub struct Currency {
-    pub id: i16,
-    pub label: String,
-    pub abbreviation: String,
+    pub id: i32,
+    pub code: String,
+    pub name: String,
 }
