@@ -13,19 +13,11 @@ pub struct Person {
 
 #[derive(Serialize,Deserialize,Insertable)]
 #[diesel(table_name = persons)]
-pub struct NewPerson<'a> {
-    pub username: &'a str,
-    pub first_name: &'a str,
-    pub last_name: &'a str,
-    pub dob: chrono::NaiveDate,
-    pub password_hash: &'a str,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InputPersonHandler {
+pub struct NewPerson {
     pub username: String,
     pub first_name: String,
     pub last_name: String,
+    pub dob: chrono::NaiveDate,
     pub password_hash: String,
 }
 

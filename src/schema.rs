@@ -1,6 +1,31 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
+    address_types (id) {
+        id -> Int4,
+        #[sql_name = "type"]
+        type_ -> Varchar,
+    }
+}
+
+diesel::table! {
+    addresses (id) {
+        id -> Int4,
+        person_id -> Nullable<Int4>,
+        address_type_id -> Nullable<Int4>,
+        street -> Varchar,
+        city -> Varchar,
+        state -> Nullable<Varchar>,
+        country_id -> Nullable<Int4>,
+        postal_code -> Nullable<Varchar>,
+        is_legal -> Bool,
+        is_billing -> Bool,
+        is_shipping -> Bool,
+        description -> Nullable<Text>,
+    }
+}
+
+diesel::table! {
     bank_account_balance_history (id) {
         id -> Int4,
         account_id -> Int4,
@@ -24,6 +49,40 @@ diesel::table! {
         account_type_id -> Int4,
         currency_id -> Int4,
         balance -> Numeric,
+        branch_id -> Int4,
+        account_number -> Varchar,
+    }
+}
+
+diesel::table! {
+    bank_branches (id) {
+        id -> Int4,
+        bank_id -> Int4,
+        name -> Varchar,
+        street -> Nullable<Text>,
+        city -> Text,
+        state -> Nullable<Varchar>,
+        postal_code -> Nullable<Varchar>,
+        country_id -> Int4,
+        swift -> Nullable<Varchar>,
+        description -> Nullable<Text>,
+    }
+}
+
+diesel::table! {
+    banks (id) {
+        id -> Int4,
+        name -> Varchar,
+    }
+}
+
+diesel::table! {
+    countries (id) {
+        id -> Int4,
+        name -> Varchar,
+        code -> Varchar,
+        capital -> Varchar,
+        currency_main_id -> Int4,
     }
 }
 
@@ -140,10 +199,17 @@ diesel::table! {
     }
 }
 
+diesel::joinable!(addresses -> address_types (address_type_id));
+diesel::joinable!(addresses -> countries (country_id));
+diesel::joinable!(addresses -> persons (person_id));
 diesel::joinable!(bank_account_balance_history -> bank_accounts (account_id));
 diesel::joinable!(bank_accounts -> bank_account_types (account_type_id));
+diesel::joinable!(bank_accounts -> bank_branches (branch_id));
 diesel::joinable!(bank_accounts -> currencies (currency_id));
 diesel::joinable!(bank_accounts -> persons (person_id));
+diesel::joinable!(bank_branches -> banks (bank_id));
+diesel::joinable!(bank_branches -> countries (country_id));
+diesel::joinable!(countries -> currencies (currency_main_id));
 diesel::joinable!(documents -> document_types (document_type_id));
 diesel::joinable!(documents -> persons (person_id));
 diesel::joinable!(emails -> persons (person_id));
@@ -159,9 +225,14 @@ diesel::joinable!(wishlist -> persons (person_id));
 diesel::joinable!(wishlist -> transaction_products (product_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    address_types,
+    addresses,
     bank_account_balance_history,
     bank_account_types,
     bank_accounts,
+    bank_branches,
+    banks,
+    countries,
     currencies,
     document_types,
     documents,

@@ -4,7 +4,7 @@ pub mod finance;
 use crate::database::DbPool;
 
 use crate::middlewares::auth::AuthorizationService;
-use crate::actix_web::{web,get,post,HttpResponse};
+use crate::actix_web::{post,HttpResponse};
 
 #[post("/protectedRoute")]
 async fn protected(_: AuthorizationService) -> HttpResponse {
