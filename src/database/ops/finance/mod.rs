@@ -20,14 +20,7 @@ pub fn push_transaction(conn: &mut PgConnection, input: crate::web::Json<NewTran
         amount: input.amount.clone(),
         transaction_datetime: input.transaction_datetime.clone(),
         description: input.description.clone(),
-       /*  description: match &input.description {
-            Some(_x) => {
-                    let desc = &input.description;
-                    Some(desc.as_ref().unwrap())
-            },
-            None => None
-        },
-  */   };
+    };
 
      let result = diesel::insert_into(transactions)
          .values(&new_transaction)
