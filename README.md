@@ -22,3 +22,11 @@ cargo install diesel_cli --no-default-features --features postgres
 ```
 diesel migration run
 ```
+
+### API Server
+1. Assign the API_URL, API_PORT, and SECRET_TOKEN in .env
+2. Run the server:
+
+```
+cargo run
+```
