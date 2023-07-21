@@ -1,53 +1,82 @@
 use serde::{Deserialize,Serialize};
-use crate::schema::{finance_transaction};
+use crate::schema::{transactions,bank_accounts};
+use bigdecimal::BigDecimal;
 
 #[derive(Serialize,Deserialize,Queryable)]
 pub struct Transaction {
     pub id: i32,
+    pub group_id: Option<i32>,
     pub account_id: i32,
-    pub description: String,
-    pub bank_description: Option<String>,
-    pub item_link: Option<String>,
-    pub amount: f32,
-    pub tentative_amount: Option<f32>,
-    pub is_amount_tentative: bool,
-    pub category_id: i32,
-    pub currency_id: i16,
+    pub action_id: i32,
+    pub tag_id: Option<i32>,
+    pub product_id: Option<i32>,
+    pub document_id: Option<i32>,
+    pub is_need: Option<bool>,
+    pub amount: BigDecimal,
+    pub transaction_datetime: chrono::NaiveDateTime,
+    pub description: Option<String>,
     pub created_at: chrono::NaiveDateTime,
     pub updated_at: Option<chrono::NaiveDateTime>,
 }
 
 #[derive(Serialize,Deserialize,Insertable)]
-#[diesel(table_name = finance_transaction)]
-pub struct NewTransaction<'a> {
+#[diesel(table_name = transactions)]
+pub struct NewTransaction {
+    pub group_id: Option<i32>,
     pub account_id: i32,
-    pub description: &'a str,
-    pub bank_description: Option<&'a str>,
-    pub item_link: Option<&'a str>,
-    pub amount: f32,
-    pub tentative_amount: Option<f32>,
-    pub is_amount_tentative: bool,
-    pub category_id: i32,
-    pub currency_id: i16,
-    pub created_at: chrono::NaiveDateTime,
-    pub updated_at: Option<chrono::NaiveDateTime>,
+    pub action_id: i32,
+    pub tag_id: Option<i32>,
+    pub product_id: Option<i32>,
+    pub document_id: Option<i32>,
+    pub is_need: Option<bool>,
+    pub amount: BigDecimal,
+    pub transaction_datetime: chrono::NaiveDateTime,
+    pub description: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InputTransactionHandler {
-    pub description: String,
-    pub bank_description: Option<String>,
-    pub item_link: Option<String>,
-    pub amount: f32,
-    pub tentative_amount: Option<f32>,
-    pub is_amount_tentative: bool,
-    pub category_id: i32,
-    pub currency_id: i16,
+#[derive(Serialize,Deserialize,Queryable)]
+pub struct BankAccount {
+    pub id: i32,
+    pub person_id: i32,
+    pub account_type_id: i32,
+    pub currency_id: i32,
+    pub archived: bool,
+    pub created_at: chrono::NaiveDateTime,
+    pub updated_at: Option<chrono::NaiveDateTime>,
+    pub branch_id: i32,
+    pub account_number: String,
+}
+
+#[derive(Serialize,Deserialize,Insertable)]
+#[diesel(table_name = bank_accounts)]
+pub struct NewBankAccount {
+    pub person_id: i32,
+    pub account_type_id: i32,
+    pub currency_id: i32,
+    pub branch_id: i32,
+    pub account_number: String,
+}
+
+#[derive(Serialize,Deserialize,Queryable)]
+pub struct BankBranch {
+    pub id: i32,
+    pub record_group: i32,
+    pub is_current: bool,
+    pub bank_id: i32,
+    pub name: String,
+    pub street: Option<String>,
+    pub city: String,
+    pub state: Option<String>,
+    pub postal_code: Option<String>,
+    pub country_id: i32,
+    pub swift: Option<String>,
+    pub description: Option<String>,
+    pub created_at: chrono::NaiveDateTime,
 }
 
 #[derive(Serialize,Deserialize,Queryable)]
 pub struct Currency {
-    pub id: i16,
-    pub label: String,
-    pub abbreviation: String,
+    pub id: i32,
+    pub code: String,
+    pub name: String,
 }

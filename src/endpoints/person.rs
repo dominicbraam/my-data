@@ -19,7 +19,7 @@ pub async fn get_persons(pool: web::Data<DbPool>) -> Result<HttpResponse, AppErr
 }
 
 #[post("/person")]
-pub async fn create_person(pool: web::Data<DbPool>, body: web::Json<models::person::InputPersonHandler>) -> Result<HttpResponse, AppError> {
+pub async fn create_person(pool: web::Data<DbPool>, body: web::Json<models::person::NewPerson>) -> Result<HttpResponse, AppError> {
 
     let size = web::block(move || {
         let mut conn = pool.get()?;

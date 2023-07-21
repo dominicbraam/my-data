@@ -1,0 +1,1 @@
+DROP TABLE bank_account_balance_history;
