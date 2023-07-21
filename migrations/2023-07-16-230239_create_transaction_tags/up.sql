@@ -1,4 +1,7 @@
 CREATE TABLE transaction_tags (
     id SERIAL PRIMARY KEY,
-    tag VARCHAR(50) NOT NULL
+    person_id INTEGER NOT NULL REFERENCES persons(id),
+    tag VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
 );

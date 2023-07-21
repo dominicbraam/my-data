@@ -18,7 +18,7 @@ pub fn push_transaction(conn: &mut PgConnection, input: crate::web::Json<NewTran
         document_id: input.document_id.clone(),
         is_need: input.is_need.clone(),
         amount: input.amount.clone(),
-        transaction_date: chrono::Utc::now().date_naive(),
+        transaction_datetime: input.transaction_datetime.clone(),
         description: input.description.clone(),
        /*  description: match &input.description {
             Some(_x) => {
@@ -52,7 +52,6 @@ pub fn push_bank_account(conn: &mut PgConnection, input: crate::web::Json<NewBan
         person_id: input.person_id.clone(),
         account_type_id: input.account_type_id.clone(),
         currency_id: input.currency_id.clone(),
-        balance: input.balance.clone(),
         branch_id: input.branch_id.clone(),
         account_number: input.account_number.clone(),
     };

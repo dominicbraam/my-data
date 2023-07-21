@@ -10,5 +10,8 @@ CREATE TABLE addresses (
   is_legal BOOLEAN NOT NULL DEFAULT false,
   is_billing BOOLEAN NOT NULL DEFAULT false,
   is_shipping BOOLEAN NOT NULL DEFAULT false,
-  description TEXT
+  description TEXT,
+  archived BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP
 );

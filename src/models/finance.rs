@@ -13,8 +13,10 @@ pub struct Transaction {
     pub document_id: Option<i32>,
     pub is_need: Option<bool>,
     pub amount: BigDecimal,
-    pub transaction_date: chrono::NaiveDate,
+    pub transaction_datetime: chrono::NaiveDateTime,
     pub description: Option<String>,
+    pub created_at: chrono::NaiveDateTime,
+    pub updated_at: Option<chrono::NaiveDateTime>,
 }
 
 #[derive(Serialize,Deserialize,Insertable)]
@@ -28,7 +30,7 @@ pub struct NewTransaction {
     pub document_id: Option<i32>,
     pub is_need: Option<bool>,
     pub amount: BigDecimal,
-    pub transaction_date: chrono::NaiveDate,
+    pub transaction_datetime: chrono::NaiveDateTime,
     pub description: Option<String>,
 }
 
@@ -38,7 +40,9 @@ pub struct BankAccount {
     pub person_id: i32,
     pub account_type_id: i32,
     pub currency_id: i32,
-    pub balance: BigDecimal,
+    pub archived: bool,
+    pub created_at: chrono::NaiveDateTime,
+    pub updated_at: Option<chrono::NaiveDateTime>,
     pub branch_id: i32,
     pub account_number: String,
 }
@@ -49,7 +53,6 @@ pub struct NewBankAccount {
     pub person_id: i32,
     pub account_type_id: i32,
     pub currency_id: i32,
-    pub balance: BigDecimal,
     pub branch_id: i32,
     pub account_number: String,
 }
@@ -57,6 +60,8 @@ pub struct NewBankAccount {
 #[derive(Serialize,Deserialize,Queryable)]
 pub struct BankBranch {
     pub id: i32,
+    pub record_group: i32,
+    pub is_current: bool,
     pub bank_id: i32,
     pub name: String,
     pub street: Option<String>,
@@ -66,6 +71,7 @@ pub struct BankBranch {
     pub country_id: i32,
     pub swift: Option<String>,
     pub description: Option<String>,
+    pub created_at: chrono::NaiveDateTime,
 }
 
 #[derive(Serialize,Deserialize,Queryable)]

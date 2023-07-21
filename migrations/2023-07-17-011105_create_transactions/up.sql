@@ -8,6 +8,8 @@ CREATE TABLE transactions (
   document_id INTEGER REFERENCES documents(id),
   is_need BOOLEAN,
   amount DECIMAL(10, 2) NOT NULL,
-  transaction_date DATE NOT NULL,
-  description TEXT
+  transaction_datetime TIMESTAMP NOT NULL,
+  description TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP
 );

@@ -5,9 +5,11 @@ CREATE TABLE transaction_actions (
 );
 
 INSERT INTO transaction_actions (actions,transaction_type_id) VALUES 
-  ('deposit',1), 
-  ('withdrawal',2), 
-  ('fee',2), 
-  ('interest',2), 
-  ('refund',1), 
-  ('payment',2);
+  ('Initial Balance',(SELECT id FROM transaction_types WHERE type = 'income')),
+  ('Deposit',(SELECT id FROM transaction_types WHERE type = 'income')),
+  ('Salary',(SELECT id FROM transaction_types WHERE type = 'income')),
+  ('Withdrawal',(SELECT id FROM transaction_types WHERE type = 'expenditure')),
+  ('Fee',(SELECT id FROM transaction_types WHERE type = 'expenditure')),
+  ('Interest',(SELECT id FROM transaction_types WHERE type = 'income')),
+  ('Refund',(SELECT id FROM transaction_types WHERE type = 'income')),
+  ('Purchase',(SELECT id FROM transaction_types WHERE type = 'expenditure'));
