@@ -1,4 +1,4 @@
-CREATE TABLE address_types (
+CREATE TABLE IF NOT EXISTS address_types (
     id SERIAL PRIMARY KEY,
     type VARCHAR(50) NOT NULL
 );

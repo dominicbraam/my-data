@@ -1,1 +1,1 @@
-DROP TABLE currencies;
+DROP TABLE IF EXISTS financial.currencies;

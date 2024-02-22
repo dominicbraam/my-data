@@ -1,10 +1,10 @@
 use diesel::prelude::*;
 
 use crate::models::finance::{NewTransaction,Transaction,NewBankAccount,BankAccount,BankBranch,Currency};
-use crate::schema::transactions::dsl::*;
-use crate::schema::bank_accounts::dsl::*;
-use crate::schema::bank_branches::dsl::*;
-use crate::schema::currencies::dsl::*;
+use crate::schema::financial::transactions::dsl::*;
+use crate::schema::financial::bank_accounts::dsl::*;
+use crate::schema::financial::bank_branches::dsl::*;
+use crate::schema::financial::currencies::dsl::*;
 use crate::error::AppError;
 
 pub fn push_transaction(conn: &mut PgConnection, input: crate::web::Json<NewTransaction>) -> Result<usize,AppError> {

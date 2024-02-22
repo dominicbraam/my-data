@@ -1,1 +1,1 @@
-DROP TABLE transaction_groups;
+DROP TABLE IF EXISTS financial.transaction_groups;

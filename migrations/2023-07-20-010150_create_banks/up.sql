@@ -1,4 +1,4 @@
-CREATE TABLE banks (
+CREATE TABLE IF NOT EXISTS financial.banks (
     id SERIAL PRIMARY KEY,
     record_group INTEGER NOT NULL,
     is_current BOOLEAN NOT NULL DEFAULT TRUE,
@@ -6,7 +6,7 @@ CREATE TABLE banks (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO banks (record_group,name) VALUES
+INSERT INTO financial.banks (record_group,name) VALUES
   (1,'BANK OF GUYANA'),
   (2,'BANK OF NOVA SCOTIA,THE'),
   (3,'CITIZENS BANK GUYANA INC'),

@@ -1,1 +1,1 @@
-DROP TABLE transaction_types;
+DROP TABLE IF EXISTS financial.transaction_types;

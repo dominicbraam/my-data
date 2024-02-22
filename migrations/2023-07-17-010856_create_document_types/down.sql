@@ -1,1 +1,1 @@
-DROP TABLE document_types;
+DROP TABLE IF EXISTS document_types;

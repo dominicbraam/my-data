@@ -1,4 +1,4 @@
-CREATE TABLE document_types (
+CREATE TABLE IF NOT EXISTS document_types (
     id SERIAL PRIMARY KEY,
     type VARCHAR(50) NOT NULL
 );

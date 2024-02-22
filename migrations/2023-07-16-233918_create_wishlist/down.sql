@@ -1,1 +1,1 @@
-DROP TABLE wishlist;
+DROP TABLE IF EXISTS financial.wishlist;

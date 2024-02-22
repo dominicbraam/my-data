@@ -1,8 +1,9 @@
 use serde::{Deserialize,Serialize};
-use crate::schema::{transactions,bank_accounts};
+use crate::schema::financial;
 use bigdecimal::BigDecimal;
 
 #[derive(Serialize,Deserialize,Queryable)]
+#[diesel(table_name = financial::transactions)]
 pub struct Transaction {
     pub id: i32,
     pub group_id: Option<i32>,
@@ -20,7 +21,7 @@ pub struct Transaction {
 }
 
 #[derive(Serialize,Deserialize,Insertable)]
-#[diesel(table_name = transactions)]
+#[diesel(table_name = financial::transactions)]
 pub struct NewTransaction {
     pub group_id: Option<i32>,
     pub account_id: i32,
@@ -35,6 +36,7 @@ pub struct NewTransaction {
 }
 
 #[derive(Serialize,Deserialize,Queryable)]
+#[diesel(table_name = financial::bank_accounts)]
 pub struct BankAccount {
     pub id: i32,
     pub person_id: i32,
@@ -48,7 +50,7 @@ pub struct BankAccount {
 }
 
 #[derive(Serialize,Deserialize,Insertable)]
-#[diesel(table_name = bank_accounts)]
+#[diesel(table_name = financial::bank_accounts)]
 pub struct NewBankAccount {
     pub person_id: i32,
     pub account_type_id: i32,
@@ -58,6 +60,7 @@ pub struct NewBankAccount {
 }
 
 #[derive(Serialize,Deserialize,Queryable)]
+#[diesel(table_name = financial::bank_brances)]
 pub struct BankBranch {
     pub id: i32,
     pub record_group: i32,
@@ -75,6 +78,7 @@ pub struct BankBranch {
 }
 
 #[derive(Serialize,Deserialize,Queryable)]
+#[diesel(table_name = financial::currencies)]
 pub struct Currency {
     pub id: i32,
     pub code: String,

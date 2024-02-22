@@ -23,6 +23,12 @@ cargo install diesel_cli --no-default-features --features postgres
 diesel migration run
 ```
 
+Ensure that all schemas are imported to the schema file. By default Diesel uses the public schema to generate the schema file. Until Diesel updates their cli to support multiple schemas (there is a ticket open on GitHub atm - [splitting into multiple schema.rs](https://github.com/diesel-rs/diesel/pull/3796)), you will have to manually generate the other schemas by using the `print-schema` command. For example, to add the financial schema, run the following command:
+
+```
+diesel print-schema -s financial >> src/schema.rs
+```
+
 ### API Server
 1. Assign the API_URL, API_PORT, and SECRET_TOKEN in .env
 2. Run the server:

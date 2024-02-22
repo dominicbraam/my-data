@@ -1,1 +1,1 @@
-DROP TABLE bank_branches;
+DROP TABLE IF EXISTS financial.bank_branches;

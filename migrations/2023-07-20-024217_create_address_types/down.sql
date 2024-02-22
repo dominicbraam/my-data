@@ -1,1 +1,1 @@
-DROP TABLE address_types;
+DROP TABLE IF EXISTS address_types;

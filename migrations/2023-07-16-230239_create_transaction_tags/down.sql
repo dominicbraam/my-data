@@ -1,1 +1,1 @@
-DROP TABLE transaction_tags;
+DROP TABLE IF EXISTS financial.transaction_tags;

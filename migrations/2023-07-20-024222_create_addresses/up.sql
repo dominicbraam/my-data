@@ -1,4 +1,4 @@
-CREATE TABLE addresses (
+CREATE TABLE IF NOT EXISTS addresses (
   id SERIAL PRIMARY KEY,
   person_id INTEGER REFERENCES persons(id),
   address_type_id INTEGER REFERENCES address_types(id),
