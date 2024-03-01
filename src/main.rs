@@ -30,7 +30,7 @@ async fn main() -> std::io::Result<()> {
         .parse()
         .expect("Not an integer");
 
-    log::info!("starting HTTP server at http://localhost:8080");
+    log::info!("starting HTTP server at http://{}:{}", api_url, api_port);
 
     // Start HTTP server
     HttpServer::new(move || {
@@ -42,9 +42,9 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(pool.clone()))
             // .wrap(cors)
             .wrap(middleware::Logger::default())
-            .service(endpoints::person::get_persons)
+            .service(endpoints::person::get_person_by_id)
             .service(endpoints::person::create_person)
-            .service(endpoints::finance::get_transactions)
+            .service(endpoints::finance::get_transaction_by_id)
             .service(endpoints::finance::create_transaction)
             .service(endpoints::finance::get_bank_accounts)
             .service(endpoints::finance::create_bank_account)

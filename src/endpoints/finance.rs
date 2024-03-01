@@ -1,60 +1,69 @@
 use crate::actix_web::{web,get,post,HttpResponse};
-use crate::database::ops;
-use crate::models;
 use super::DbPool;
+use crate::database::ops;
+use crate::models::finance::{Transaction,NewTransaction,BankAccount,NewBankAccount};
+use crate::schema::financial::{
+    transactions::dsl::*,
+    bank_accounts::dsl::*,
+};
 
 use crate::error::AppError;
 
-#[get("/finance/transaction")]
-pub async fn get_transactions(pool: web::Data<DbPool>) -> Result<HttpResponse, AppError> {
+#[get("/finance/transaction/{tid}")]
+pub async fn get_transaction_by_id(
+    pool: web::Data<DbPool>,
+    path: web::Path<i32>,
+    ) -> Result<HttpResponse, AppError>
+{
+    let tid = path.into_inner();
 
-    let transactions = web::block(move || {
+    let results: Result<Transaction, AppError> = web::block(move || {
         let mut conn = pool.get()?;
-        ops::finance::pull_transactions(&mut conn)
+        ops::fetch_item_by_pk(&mut conn, transactions, tid)
     })
-    .await?
-        .map_err(actix_web::error::ErrorInternalServerError)?;
+    .await
+    .map_err(AppError::from)?;
 
-    Ok(HttpResponse::Ok().json(transactions))
+    Ok(HttpResponse::Ok().json(results))
 }
 
 #[post("/finance/transaction")]
-pub async fn create_transaction(pool: web::Data<DbPool>, body: web::Json<models::finance::NewTransaction>) -> Result<HttpResponse, AppError> {
+pub async fn create_transaction(pool: web::Data<DbPool>, body: web::Json<NewTransaction>) -> Result<HttpResponse, AppError> {
 
-    let size = web::block(move || {
+    let result: Result<Transaction,AppError> = web::block(move || {
         let mut conn = pool.get()?;
-        ops::finance::push_transaction(&mut conn, body)
+        ops::insert_into_table(&mut conn, transactions, body.into_inner())
     })
-    .await?
-        .map_err(actix_web::error::ErrorInternalServerError)?;
+    .await
+    .map_err(AppError::from)?;
 
-    Ok(HttpResponse::Ok().json(size))
+    Ok(HttpResponse::Ok().json(result))
 }
 
 #[get("/finance/account")]
 pub async fn get_bank_accounts(pool: web::Data<DbPool>) -> Result<HttpResponse, AppError> {
 
-    let bank_accounts = web::block(move || {
+    let results = web::block(move || {
         let mut conn = pool.get()?;
         ops::finance::pull_bank_accounts(&mut conn)
     })
     .await?
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    Ok(HttpResponse::Ok().json(bank_accounts))
+    Ok(HttpResponse::Ok().json(results))
 }
 
 #[post("/finance/account")]
-pub async fn create_bank_account(pool: web::Data<DbPool>, body: web::Json<models::finance::NewBankAccount>) -> Result<HttpResponse, AppError> {
+pub async fn create_bank_account(pool: web::Data<DbPool>, body: web::Json<NewBankAccount>) -> Result<HttpResponse, AppError> {
 
-    let size = web::block(move || {
+    let result: Result<BankAccount,AppError> = web::block(move || {
         let mut conn = pool.get()?;
-        ops::finance::push_bank_account(&mut conn, body)
+        ops::insert_into_table(&mut conn, bank_accounts, body.into_inner())
     })
-    .await?
-        .map_err(actix_web::error::ErrorInternalServerError)?;
+    .await
+    .map_err(AppError::from)?;
 
-    Ok(HttpResponse::Ok().json(size))
+    Ok(HttpResponse::Ok().json(result))
 }
 
 #[get("/finance/branch")]

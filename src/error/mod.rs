@@ -1,12 +1,31 @@
 use std::fmt;
 use diesel::r2d2::PoolError;
-use actix_web::{Error,ResponseError,error::BlockingError,HttpResponse,http::StatusCode};
-use serde::{Serialize};
+use diesel::result::{
+    // DatabaseErrorKind,
+    Error as DieselError
+};
+use actix_web::{
+    Error,
+    ResponseError,
+    error::BlockingError,
+    HttpResponse,
+    http::StatusCode
+};
+use serde::Serialize;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
+pub enum AppErrorType {
+    DbError,
+    NotFoundError,
+    ReqwestError,
+//    BadReqError,
+}
+
+#[derive(Debug, Serialize)]
 pub struct AppError {
-    pub cause: Option<String>,
-    pub message: Option<String>,
+    pub cause: Option<String>,          // more detailed, for logging
+    pub user_message: Option<String>,   // user-friendly message
+    pub log_message: Option<String>,    // detailed log message
     pub error_type: AppErrorType,
 }
 
@@ -14,14 +33,6 @@ impl fmt::Display for AppError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{:?}", self)
     }
-}
-
-#[derive(Debug)]
-pub enum AppErrorType {
-    DbError,
-    NotFoundError,
-    ReqwestError,
-//    BadReqError,
 }
 
 impl fmt::Display for AppErrorType {
@@ -38,8 +49,9 @@ pub struct AppErrorResponse {
 impl From<PoolError> for AppError {
     fn from(error: PoolError) -> AppError {
         AppError {
-            message: None,
             cause: Some(error.to_string()),
+            user_message: None,
+            log_message: None,
             error_type: AppErrorType::DbError,
         }
     }
@@ -47,8 +59,9 @@ impl From<PoolError> for AppError {
 impl From<Error> for AppError {
     fn from(error: Error) -> AppError {
         AppError {
-            message: None,
             cause: Some(error.to_string()),
+            user_message: None,
+            log_message: None,
             error_type: AppErrorType::DbError,
         }
     }
@@ -56,8 +69,9 @@ impl From<Error> for AppError {
 impl From<BlockingError> for AppError {
     fn from(error: BlockingError) -> AppError {
         AppError {
-            message: None,
             cause: Some(error.to_string()),
+            user_message: None,
+            log_message: None,
             error_type: AppErrorType::DbError,
         }
     }
@@ -65,9 +79,44 @@ impl From<BlockingError> for AppError {
 impl From<reqwest::Error> for AppError {
     fn from(error: reqwest::Error) -> AppError {
         AppError {
-            message: None,
             cause: Some(error.to_string()),
+            user_message: None,
+            log_message: None,
             error_type: AppErrorType::ReqwestError,
+        }
+    }
+}
+
+impl From<DieselError> for AppError {
+    fn from(error: DieselError) -> AppError {
+        match error {
+            DieselError::NotFound => AppError {
+                cause: Some("Resource not found in the database.".to_string()),
+                user_message: Some("The requested item was not found.".to_string()),
+                log_message: Some(format!("Database not found error: {:?}", error)),
+                error_type: AppErrorType::NotFoundError,
+            },
+            DieselError::DatabaseError(_, info) => {
+            // DieselError::DatabaseError(kind, info) => {
+                // let kind = match kind {
+                //     DatabaseErrorKind::UniqueViolation => "Unique constraint violation".to_string(),
+                //     DatabaseErrorKind::ForeignKeyViolation => "Foreign key violation".to_string(),
+                //     _ => "Database error".to_string(),
+                // };
+                AppError {
+                    cause: Some(info.message().to_string()),
+                    user_message: Some("Database error".to_string()),
+                // log_message: Some(format!("Database not found error: {:?}", kind)),
+                    log_message: Some(info.message().to_string()),
+                    error_type: AppErrorType::DbError,
+                }
+            }
+            _ => AppError {
+                cause: Some(error.to_string()),
+                user_message: None,
+                log_message: None,
+                error_type: AppErrorType::DbError,
+            },
         }
     }
 }
@@ -84,28 +133,30 @@ impl ResponseError for AppError {
     }
 
     fn error_response(&self) -> HttpResponse {
+        log::error!("Error: {}", self.log_message());
+
         HttpResponse::build(self.status_code()).json(AppErrorResponse {
-            error: self.message(),
+            error: self.user_message(),
         })
     }
 }
 
 impl AppError {
-    // we are handling the none. the function name should match the field name
-    fn message(&self) -> String {
-        match &*self {
-            // Error message is found then clone otherwise default message
-            AppError {
-                cause: _,
-                message: Some(message),
-                error_type: _,
-            } => message.clone(),
-            AppError {
-                cause: _,
-                message: None,
-                error_type: AppErrorType::NotFoundError,
-            } => "The requested item was not found".to_string(),
-            _ => "An unexpected error has occurred".to_string(),
+
+    fn user_message(&self) -> String {
+        self.user_message.clone().unwrap_or_else(|| match self.error_type {
+            AppErrorType::NotFoundError => "The requested item was not found.".to_string(),
+            _ => "An unexpected error has occurred.".to_string()
+        })
+    }
+
+    fn log_message(&self) -> String {
+        if let Some(ref message) = self.log_message {
+            message.clone()
+        } else if let Some(ref cause) = self.cause {
+            cause.clone()
+        } else {
+            "An unexpected error occured.".to_string()
         }
     }
 }
