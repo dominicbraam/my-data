@@ -14,11 +14,11 @@ pub async fn get_person_by_id(
 {
     let uid = path.into_inner();
 
-    let results: Result<Person, AppError> = web::block(move || {
+    let results: Person = web::block(move || {
         let mut conn = pool.get()?;
         ops::fetch_item_by_pk(&mut conn, persons, uid)
     })
-    .await
+    .await?
     .map_err(AppError::from)?;
 
     Ok(HttpResponse::Ok().json(results))
@@ -30,11 +30,11 @@ pub async fn create_person(
     body: web::Json<NewPerson>
     ) -> Result<HttpResponse, AppError>
 {
-    let new_person: Result<Person, AppError> = web::block(move || {
+    let new_person: Person = web::block(move || {
         let mut conn = pool.get()?;
         ops::insert_into_table(&mut conn, persons, body.into_inner())
     })
-    .await
+    .await?
     .map_err(AppError::from)?;
 
     Ok(HttpResponse::Ok().json(new_person))

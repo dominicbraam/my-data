@@ -1,6 +1,5 @@
 #[macro_use]
 extern crate diesel;
-extern crate dotenvy;
 extern crate chrono;
 extern crate actix_web;
 extern crate reqwest;
@@ -18,8 +17,17 @@ mod middlewares;
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
 
-    dotenvy::dotenv().ok();
-    env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
+    // Configure a custom event formatter - Logging
+    let format = tracing_subscriber::fmt::format()
+        .with_thread_ids(true) // include the thread ID of the current thread
+        .with_thread_names(true); // include the name of the current thread
+
+    // Create a `fmt` subscriber that uses our custom event format, and set it as the default.
+    tracing_subscriber::fmt()
+        .event_format(format)
+        // Logger set to debug for dev; can change to info for prod
+        .with_max_level(tracing::Level::DEBUG)
+        .init();
 
     // set up database connection pool
     let pool = database::create_pooled_connection();
@@ -30,7 +38,7 @@ async fn main() -> std::io::Result<()> {
         .parse()
         .expect("Not an integer");
 
-    log::info!("starting HTTP server at http://{}:{}", api_url, api_port);
+    tracing::info!("starting HTTP server at http://{}:{}", api_url, api_port);
 
     // Start HTTP server
     HttpServer::new(move || {
@@ -41,6 +49,7 @@ async fn main() -> std::io::Result<()> {
             // set up DB pool to be used with web::Data<Pool> extractor
             .app_data(web::Data::new(pool.clone()))
             // .wrap(cors)
+            // .wrap(tracing_actix_web::TracingLogger::default())
             .wrap(middleware::Logger::default())
             .service(endpoints::person::get_person_by_id)
             .service(endpoints::person::create_person)
