@@ -46,36 +46,36 @@ use crate::error::AppError;
 // }
 
 // Help from: https://stackoverflow.com/questions/48487871/generic-function-using-diesel-causes-overflow
-pub fn fetch_item_by_pk<'a, T, FullStruct>(
+pub fn fetch_item_by_pk<'a, T, QueryableStruct>(
     conn: &mut PgConnection,
     table: T,
     pk: i32
-    ) -> Result<FullStruct, AppError>
+    ) -> Result<QueryableStruct, AppError>
     where
         T: FindDsl<i32>,
-        Find<T, i32>: LoadQuery<'a, PgConnection, FullStruct>,
+        Find<T, i32>: LoadQuery<'a, PgConnection, QueryableStruct>,
 {
     let results = table
         .find(pk)
-        .get_result::<FullStruct>(conn)
+        .get_result::<QueryableStruct>(conn)
         .map_err(AppError::from)?;
 
     Ok(results)
 }
 
 // Help from: https://www.reddit.com/r/rust/comments/afkuko/porting_go_to_rust_how_to_implement_a_generic/
-pub fn insert_into_table<'a, T, InsertStruct, FullStruct, Values>(
+pub fn insert_into_table<'a, T, InsertableStruct, QueryableStruct, Values>(
     conn: &mut PgConnection,
     table: T,
-    new_record: InsertStruct,
-) -> Result<FullStruct, AppError>
+    new_record: InsertableStruct,
+) -> Result<QueryableStruct, AppError>
     where
         T: diesel::QuerySource + diesel::Table,
-        InsertStruct: Insertable<T, Values=Values>,
-        InsertStatement<T, Values>: LoadQuery<'a, PgConnection, FullStruct>,
+        InsertableStruct: Insertable<T, Values=Values>,
+        InsertStatement<T, Values>: LoadQuery<'a, PgConnection, QueryableStruct>,
 {
     let result = new_record.insert_into(table)
-        .get_result::<FullStruct>(conn)
+        .get_result::<QueryableStruct>(conn)
         .map_err(AppError::from)?;
 
     Ok(result)
