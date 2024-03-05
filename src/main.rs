@@ -1,3 +1,10 @@
+mod schema;
+mod models;
+mod database;
+mod endpoints;
+mod error;
+mod middlewares;
+
 use actix_web::{
     middleware,
     web,
@@ -5,13 +12,8 @@ use actix_web::{
     HttpServer,
 };
 use std::env;
-
-mod schema;
-mod models;
-mod database;
-mod endpoints;
-mod error;
-mod middlewares;
+use database::handler::DatabaseHandler;
+use middlewares::server::ServerConfig;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -29,17 +31,17 @@ async fn main() -> std::io::Result<()> {
         .init();
 
     // set up database connection pool
-    let db_handler = database::handler::DatabaseHandler::new()
+    let db_handler = DatabaseHandler::new()
         .expect("Error creating database handler from env vars.");
     let pool = db_handler.create_pooled_conn();
     
-    let api_url = env::var("API_HOST").expect("Failed to get API URL");
-    let api_port: u16 = env::var("API_PORT").expect("Failed to get API port")
-        .trim()
-        .parse()
-        .expect("Not an integer");
+    let server_conf = ServerConfig::new()
+        .expect("Error creating server config from env vars.");
 
-    tracing::info!("starting HTTP server at http://{}:{}", api_url, api_port);
+    tracing::info!(
+        "Starting HTTP server at http://{}:{}",
+        server_conf.api_host, server_conf.api_port
+    );
 
     // Start HTTP server
     HttpServer::new(move || {
@@ -62,7 +64,7 @@ async fn main() -> std::io::Result<()> {
             .service(endpoints::finance::get_currencies)
             .service(endpoints::protected)
     })
-    .bind((api_url, api_port))?
+    .bind((server_conf.api_host, server_conf.api_port))?
     .run()
     .await
 
