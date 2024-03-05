@@ -9,7 +9,7 @@ API for personal data storage.
 3. Copy .env.template to .env
 
 ### Database
-1. Create a postgres database for the API to use.
+1. Create a postgres database for the API to use. See the directory called `db-postgresql-docker` in this repo to easily spin up a postgres database.
 2. Set database variables in .env
 3. Install Diesel CLI (ORM to interact with the database):
 
