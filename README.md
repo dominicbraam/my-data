@@ -10,7 +10,7 @@ API for personal data storage.
 
 ### Database
 1. Create a postgres database for the API to use.
-2. Assign the database url for the database created in the step above to the DATABASE_URL variable in .env
+2. Set database variables in .env
 3. Install Diesel CLI (ORM to interact with the database):
 
 ```
@@ -30,7 +30,7 @@ diesel print-schema -s financial >> src/schema.rs
 ```
 
 ### API Server
-1. Assign the API_URL, API_PORT, and SECRET_TOKEN in .env
+1. Set the API_HOST, API_PORT, and SECRET_TOKEN in .env
 2. Run the server:
 
 ```
