@@ -1,4 +1,10 @@
-use crate::actix_web::{web,get,post,delete,HttpResponse};
+use actix_web::{
+    web,
+    get,
+    post,
+    delete,
+    HttpResponse,
+};
 use super::DbPool;
 use crate::database::ops;
 use crate::models::person::{Person,NewPerson};

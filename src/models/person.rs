@@ -1,4 +1,13 @@
-use serde::{Deserialize,Serialize};
+use serde::{
+    Serialize,
+    Deserialize,
+};
+use diesel::{
+    Queryable,
+    Insertable,
+    Identifiable,
+    AsChangeset,
+};
 use crate::schema::persons;
 
 #[derive(Serialize,Deserialize,Queryable,AsChangeset,Identifiable)]

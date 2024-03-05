@@ -1,6 +1,11 @@
 use crate::models::person::Claims;
-use actix_web::error::ErrorUnauthorized;
-use crate::actix_web::{dev, Error, FromRequest, HttpRequest};
+use actix_web::{
+    dev,
+    error::ErrorUnauthorized,
+    Error,
+    FromRequest,
+    HttpRequest,
+};
 use futures::future::{err, ok, Ready};
 use jsonwebtoken::{decode, Algorithm, DecodingKey, Validation};
 use crate::env;

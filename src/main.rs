@@ -1,10 +1,9 @@
-#[macro_use]
-extern crate diesel;
-extern crate chrono;
-extern crate actix_web;
-extern crate reqwest;
-
-use actix_web::{middleware,web,App,HttpServer};
+use actix_web::{
+    middleware,
+    web,
+    App,
+    HttpServer,
+};
 use std::env;
 
 mod schema;
@@ -30,9 +29,11 @@ async fn main() -> std::io::Result<()> {
         .init();
 
     // set up database connection pool
-    let pool = database::create_pooled_connection();
+    let db_handler = database::handler::DatabaseHandler::new()
+        .expect("Error creating database handler from env vars.");
+    let pool = db_handler.create_pooled_conn();
     
-    let api_url = env::var("API_URL").expect("Failed to get API URL");
+    let api_url = env::var("API_HOST").expect("Failed to get API URL");
     let api_port: u16 = env::var("API_PORT").expect("Failed to get API port")
         .trim()
         .parse()

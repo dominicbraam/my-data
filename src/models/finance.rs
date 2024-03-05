@@ -1,4 +1,11 @@
-use serde::{Deserialize,Serialize};
+use serde::{
+    Serialize,
+    Deserialize,
+};
+use diesel::{
+    Insertable,
+    Queryable,
+};
 use crate::schema::financial;
 use bigdecimal::BigDecimal;
 
