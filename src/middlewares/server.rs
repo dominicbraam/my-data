@@ -1,8 +1,7 @@
-use dotenvy::dotenv;
-use std::env;
 use actix_web::web;
 use crate::endpoints;
 use crate::database::handler::DbPool;
+use crate::middlewares::env_vars::get_env_var;
 
 pub struct ServerConfig {
     pub api_host: String,
@@ -11,17 +10,10 @@ pub struct ServerConfig {
 
 impl ServerConfig {
     pub fn from_env() -> Self {
-        // sets env vars from .env file
-        // good for dev but for prod, opt for setting the vars directly
-        dotenv().ok();
-
-        let api_host = env::var("API_HOST").unwrap_or_else(|_| "localhost".to_string());
-        let api_port = env::var("API_PORT").unwrap_or_else(|_| "5432".to_string())
-            .trim()
-            .parse()
-            .expect("Not an integer");
-
-        ServerConfig { api_host, api_port }
+        ServerConfig {
+            api_host: get_env_var::<String>("API_HOST", Some("localhost".to_string())),
+            api_port: get_env_var::<u16>("API_PORT", Some(5432)),
+        }
     }
 }
 

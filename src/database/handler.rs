@@ -5,8 +5,7 @@ use diesel::{
         ConnectionManager
     },
 };
-use dotenvy::dotenv;
-use std::env;
+use crate::middlewares::env_vars::get_env_var;
 
 pub type DbPool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
@@ -20,17 +19,13 @@ pub struct DatabaseHandler {
 
 impl DatabaseHandler {
     pub fn new() -> Self {
-        // sets env vars from .env file
-        // good for dev but for prod, opt for setting the vars directly
-        dotenv().ok();
-
-        let db_host = env::var("DB_HOST").unwrap_or_else(|_| "localhost".to_string());
-        let db_port = env::var("DB_PORT").unwrap_or_else(|_| "5432".to_string());
-        let db_name = env::var("DB_NAME").expect("DB_NAME environment variable not set");
-        let db_user = env::var("DB_USER").expect("DB_USER environment variable not set");
-        let db_password = env::var("DB_PASSWORD").expect("DB_PASSWORD environment variable not set");
-
-        DatabaseHandler { db_host, db_port, db_name, db_user, db_password }
+        DatabaseHandler {
+            db_host: get_env_var::<String>("DB_HOST", Some("localhost".to_string())),
+            db_port: get_env_var::<String>("DB_PORT", Some("5432".to_string())),
+            db_name: get_env_var::<String>("DB_NAME", None),
+            db_user: get_env_var::<String>("DB_USER", None),
+            db_password: get_env_var::<String>("DB_PASSWORD", None),
+        }
     }
 
     pub fn create_pooled_conn(&self) -> DbPool {

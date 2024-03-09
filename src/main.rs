@@ -13,21 +13,15 @@ use actix_web::{
 use database::handler::DatabaseHandler;
 use middlewares::server::ServerConfig;
 use middlewares::server::AppMiddleware;
+use middlewares::logging::LogConfig;
+use middlewares::logging::LogHandler;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
 
-    // Configure a custom event formatter - Logging
-    let format = tracing_subscriber::fmt::format()
-        .with_thread_ids(true) // include the thread ID of the current thread
-        .with_thread_names(true); // include the name of the current thread
-
-    // Create a `fmt` subscriber that uses our custom event format, and set it as the default.
-    tracing_subscriber::fmt()
-        .event_format(format)
-        // Logger set to debug for dev; can change to info for prod
-        .with_max_level(tracing::Level::DEBUG)
-        .init();
+    let log_conf = LogConfig::from_env();
+    let log_handler = LogHandler::new(log_conf);
+    log_handler.init_logging();
 
     // set up database connection pool
     let db_handler = DatabaseHandler::new();
