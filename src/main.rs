@@ -6,14 +6,13 @@ mod error;
 mod middlewares;
 
 use actix_web::{
-    middleware,
-    web,
     App,
+    middleware,
     HttpServer,
 };
-use std::env;
 use database::handler::DatabaseHandler;
 use middlewares::server::ServerConfig;
+use middlewares::server::AppMiddleware;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -31,14 +30,14 @@ async fn main() -> std::io::Result<()> {
         .init();
 
     // set up database connection pool
-    let db_handler = DatabaseHandler::new()
-        .expect("Error creating database handler from env vars.");
+    let db_handler = DatabaseHandler::new();
     let pool = db_handler.create_pooled_conn();
     
-    let server_conf = ServerConfig::new()
-        .expect("Error creating server config from env vars.");
+    let server_conf = ServerConfig::from_env();
 
-    tracing::info!(
+    let app_middleware = AppMiddleware::new(pool);
+
+    log::info!(
         "Starting HTTP server at http://{}:{}",
         server_conf.api_host, server_conf.api_port
     );
@@ -49,20 +48,10 @@ async fn main() -> std::io::Result<()> {
             .allowed_origin("http://localhost");
  */
         App::new()
-            // set up DB pool to be used with web::Data<Pool> extractor
-            .app_data(web::Data::new(pool.clone()))
             // .wrap(cors)
             // .wrap(tracing_actix_web::TracingLogger::default())
             .wrap(middleware::Logger::default())
-            .service(endpoints::person::get_person_by_id)
-            .service(endpoints::person::create_person)
-            .service(endpoints::finance::get_transaction_by_id)
-            .service(endpoints::finance::create_transaction)
-            .service(endpoints::finance::get_bank_accounts)
-            .service(endpoints::finance::create_bank_account)
-            .service(endpoints::finance::get_bank_branches)
-            .service(endpoints::finance::get_currencies)
-            .service(endpoints::protected)
+            .configure(|cfg| app_middleware.configure_app(cfg))
     })
     .bind((server_conf.api_host, server_conf.api_port))?
     .run()

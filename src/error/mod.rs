@@ -8,6 +8,7 @@ use actix_web::{
     HttpResponse,
     http::StatusCode
 };
+use std::convert::From;
 use serde::Serialize;
 
 #[derive(Debug, Serialize)]
@@ -20,10 +21,10 @@ pub struct AppError {
 
 #[derive(Debug, Serialize)]
 pub enum AppErrorType {
+    // BadReqError,
     DatabaseError,
     NotFoundError,
     ReqwestError,
-    BadReqError,
 }
 
 impl fmt::Display for AppError {
@@ -71,15 +72,15 @@ impl ResponseError for AppError {
 
     fn status_code(&self) -> StatusCode {
         match self.error_type {
+            // AppErrorType::BadReqError => StatusCode::BAD_REQUEST,
             AppErrorType::DatabaseError => StatusCode::INTERNAL_SERVER_ERROR,
             AppErrorType::NotFoundError => StatusCode::NOT_FOUND,
             AppErrorType::ReqwestError => StatusCode::INTERNAL_SERVER_ERROR,
-            AppErrorType::BadReqError => StatusCode::BAD_REQUEST,
         }
     }
 
     fn error_response(&self) -> HttpResponse {
-        tracing::error!("{}: {}",self.get_error_type(), self.get_log_message());
+        log::error!("{}: {}",self.get_error_type(), self.get_log_message());
 
         HttpResponse::build(self.status_code()).json(
             AppErrorResponse {
@@ -90,7 +91,7 @@ impl ResponseError for AppError {
 }
 
 impl From<PoolError> for AppError {
-    fn from(error: PoolError) -> AppError {
+    fn from(error: PoolError) -> Self {
         AppError {
             cause: Some(error.to_string()),
             user_message: None,
@@ -101,7 +102,7 @@ impl From<PoolError> for AppError {
 }
 
 impl From<ActixError> for AppError {
-    fn from(error: ActixError) -> AppError {
+    fn from(error: ActixError) -> Self {
         AppError {
             cause: Some(error.to_string()),
             user_message: None,
@@ -111,7 +112,7 @@ impl From<ActixError> for AppError {
     }
 }
 impl From<BlockingError> for AppError {
-    fn from(error: BlockingError) -> AppError {
+    fn from(error: BlockingError) -> Self {
         AppError {
             cause: Some(error.to_string()),
             user_message: None,
@@ -121,7 +122,7 @@ impl From<BlockingError> for AppError {
     }
 }
 impl From<reqwest::Error> for AppError {
-    fn from(error: reqwest::Error) -> AppError {
+    fn from(error: reqwest::Error) -> Self {
         AppError {
             cause: Some(error.to_string()),
             user_message: None,
@@ -132,7 +133,7 @@ impl From<reqwest::Error> for AppError {
 }
 
 impl From<DieselError> for AppError {
-    fn from(error: DieselError) -> AppError {
+    fn from(error: DieselError) -> Self {
         match error {
             DieselError::NotFound => AppError {
                 cause: Some("Resource not found in the database.".to_string()),

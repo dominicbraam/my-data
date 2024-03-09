@@ -1,18 +1,14 @@
 use actix_web::{
     web,
-    get,
-    post,
-    delete,
     HttpResponse,
 };
-use super::DbPool;
+use crate::database::handler::DbPool;
 use crate::database::ops;
 use crate::models::person::{Person,NewPerson};
 use crate::schema::persons::dsl::*;
 
 use crate::error::AppError;
 
-#[get("/person/{uid}")]
 pub async fn get_person_by_id(
     pool: web::Data<DbPool>,
     path: web::Path<i32>,
@@ -30,7 +26,6 @@ pub async fn get_person_by_id(
     Ok(HttpResponse::Ok().json(results))
 }
 
-#[post("/person")]
 pub async fn create_person(
     pool: web::Data<DbPool>,
     body: web::Json<NewPerson>

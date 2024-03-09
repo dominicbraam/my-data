@@ -19,7 +19,7 @@ pub struct DatabaseHandler {
 }
 
 impl DatabaseHandler {
-    pub fn new() -> Result<Self, env::VarError> {
+    pub fn new() -> Self {
         // sets env vars from .env file
         // good for dev but for prod, opt for setting the vars directly
         dotenv().ok();
@@ -30,7 +30,7 @@ impl DatabaseHandler {
         let db_user = env::var("DB_USER").expect("DB_USER environment variable not set");
         let db_password = env::var("DB_PASSWORD").expect("DB_PASSWORD environment variable not set");
 
-        Ok(DatabaseHandler {db_host, db_port, db_name, db_user, db_password})
+        DatabaseHandler { db_host, db_port, db_name, db_user, db_password }
     }
 
     pub fn create_pooled_conn(&self) -> DbPool {

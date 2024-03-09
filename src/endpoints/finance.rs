@@ -1,10 +1,8 @@
 use actix_web::{
     web,
-    get,
-    post,
     HttpResponse,
 };
-use super::DbPool;
+use crate::database::handler::DbPool;
 use crate::database::ops;
 use crate::models::finance::{Transaction,NewTransaction,BankAccount,NewBankAccount};
 use crate::schema::financial::{
@@ -14,7 +12,6 @@ use crate::schema::financial::{
 
 use crate::error::AppError;
 
-#[get("/finance/transaction/{tid}")]
 pub async fn get_transaction_by_id(
     pool: web::Data<DbPool>,
     path: web::Path<i32>,
@@ -32,7 +29,6 @@ pub async fn get_transaction_by_id(
     Ok(HttpResponse::Ok().json(results))
 }
 
-#[post("/finance/transaction")]
 pub async fn create_transaction(pool: web::Data<DbPool>, body: web::Json<NewTransaction>) -> Result<HttpResponse, AppError> {
 
     let result: Transaction = web::block(move || {
@@ -45,7 +41,6 @@ pub async fn create_transaction(pool: web::Data<DbPool>, body: web::Json<NewTran
     Ok(HttpResponse::Ok().json(result))
 }
 
-#[get("/finance/account")]
 pub async fn get_bank_accounts(pool: web::Data<DbPool>) -> Result<HttpResponse, AppError> {
 
     let results = web::block(move || {
@@ -58,7 +53,6 @@ pub async fn get_bank_accounts(pool: web::Data<DbPool>) -> Result<HttpResponse, 
     Ok(HttpResponse::Ok().json(results))
 }
 
-#[post("/finance/account")]
 pub async fn create_bank_account(pool: web::Data<DbPool>, body: web::Json<NewBankAccount>) -> Result<HttpResponse, AppError> {
 
     let result: BankAccount = web::block(move || {
@@ -71,7 +65,6 @@ pub async fn create_bank_account(pool: web::Data<DbPool>, body: web::Json<NewBan
     Ok(HttpResponse::Ok().json(result))
 }
 
-#[get("/finance/branch")]
 pub async fn get_bank_branches(pool: web::Data<DbPool>) -> Result<HttpResponse, AppError> {
 
     let bank_branches = web::block(move || {
@@ -84,7 +77,6 @@ pub async fn get_bank_branches(pool: web::Data<DbPool>) -> Result<HttpResponse, 
     Ok(HttpResponse::Ok().json(bank_branches))
 }
 
-#[get("/finance/currency")]
 pub async fn get_currencies(pool: web::Data<DbPool>) -> Result<HttpResponse, AppError> {
 
     let currencies = web::block(move || {
