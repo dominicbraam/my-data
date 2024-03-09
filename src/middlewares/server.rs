@@ -9,7 +9,7 @@ pub struct ServerConfig {
 }
 
 impl ServerConfig {
-    pub fn from_env() -> Self {
+    pub fn new_from_env() -> Self {
         ServerConfig {
             api_host: get_env_var::<String>("API_HOST", Some("localhost".to_string())),
             api_port: get_env_var::<u16>("API_PORT", Some(5432)),

@@ -14,7 +14,7 @@ pub struct LogConfig {
 }
 
 impl LogConfig {
-    pub fn from_env() -> Self {
+    pub fn new_from_env() -> Self {
         LogConfig {
             dir: get_env_var::<String>("LOG_DIR", Some("./logs".to_string())),
             file_name: get_env_var::<String>("LOG_FILE", Some("log".to_string())),

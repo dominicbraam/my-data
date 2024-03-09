@@ -18,7 +18,7 @@ pub struct DatabaseHandler {
 }
 
 impl DatabaseHandler {
-    pub fn new() -> Self {
+    pub fn new_from_env() -> Self {
         DatabaseHandler {
             db_host: get_env_var::<String>("DB_HOST", Some("localhost".to_string())),
             db_port: get_env_var::<String>("DB_PORT", Some("5432".to_string())),

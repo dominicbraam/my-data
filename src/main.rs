@@ -19,15 +19,15 @@ use middlewares::logging::LogHandler;
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
 
-    let log_conf = LogConfig::from_env();
-    let log_handler = LogHandler::new(log_conf);
-    log_handler.init_logging();
+    let log_conf = LogConfig::new_from_env();
+    LogHandler::new(log_conf)
+        .init_logging();
 
     // set up database connection pool
-    let db_handler = DatabaseHandler::new();
-    let pool = db_handler.create_pooled_conn();
+    let pool = DatabaseHandler::new_from_env()
+        .create_pooled_conn();
     
-    let server_conf = ServerConfig::from_env();
+    let server_conf = ServerConfig::new_from_env();
 
     let app_middleware = AppMiddleware::new(pool);
 
