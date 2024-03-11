@@ -1,4 +1,4 @@
 /target
 .env
-/db-postgresql-docker/db-data
+/docker-data
 /logs

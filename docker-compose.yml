@@ -10,4 +10,4 @@ services:
       POSTGRES_PASSWORD: postgres # The PostgreSQL password (useful to connect to the database)
       POSTGRES_DB: ozone-api # The PostgreSQL default database (automatically created at first launch)
     volumes:
-      - ./db-data/:/var/lib/postgresql/data/
+      - ./docker-data/db-data/:/var/lib/postgresql/data/
